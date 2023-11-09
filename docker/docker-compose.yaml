@@ -1,0 +1,23 @@
+services:
+  vacancy:
+    build:
+      dockerfile: ./vacancy/docker/Dockerfile
+    ports:
+      - 3003:3003
+    environment:
+      - SERVER_PORT=3003
+      - PG_URL=postgres://vollab:mypass@db/vollab
+      - PG_HOST=db
+      - PG_DB=vollab
+      - PG_USER=vollab
+      - PG_PASS=mypass
+      - NATS_HOST=nats
+      - JWT_KEY=jwt-key
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ./vacancy/migrations:/app/vacancy/migrations
+      - ./vacancy/src:/app/vacancy/src
+      - ./common:/app/common
+    depends_on:
+      - nats
+      - db
