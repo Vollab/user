@@ -62,7 +62,7 @@ router.patch(
 	param('demand_id', 'demand id must be a valid UUID').isUUID().exists().notEmpty(),
 	param('vacancy_id', 'vacancy id must be a valid UUID').isUUID().exists().notEmpty(),
 	validate_request,
-	// transaction,
+	transaction,
 	async (req, res) => {
 		const candidate_id = req.current_user!.user_id
 		const { demand_id, vacancy_id } = req.params
@@ -82,7 +82,7 @@ router.patch(
 
 		const [updated_enrollment] = await enrollment_model.update(vacancy_id, candidate_id, { status: 'ACCEPTED' })
 
-		res.status(200).json({ enrollment })
+		res.status(200).json({ enrollment: updated_enrollment })
 	}
 )
 

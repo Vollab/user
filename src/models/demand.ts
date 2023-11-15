@@ -11,7 +11,7 @@ export interface Demand {
 	updated_at: Date
 }
 
-type UpdateDemand = PartialOmit<Demand, 'id' | 'orderer_id' | 'updated_at' | 'created_at'>
+type UpdateDemand = PartialOmit<Demand, 'id' | 'orderer_id' | 'created_at'>
 
 class DemandModel {
 	constructor(private db: typeof database) {}
@@ -46,19 +46,19 @@ class DemandModel {
 		)
 	}
 
-	async insert(demand: Omit<Demand, 'updated_at' | 'created_at'>) {
-		const { id, orderer_id, status } = demand
+	async insert(demand: Demand) {
+		const { id, orderer_id, status, created_at, updated_at } = demand
 
 		return this.db.query<Demand>(
 			`
 			INSERT INTO
-				vacancy.demand (id, orderer_id, status)
+				vacancy.demand (id, orderer_id, status, created_at, updated_at)
 			VALUES
-				($1, $2, $3)
+				($1, $2, $3, $4, $5)
 			RETURNING
 				*
 			;`,
-			[id, orderer_id, status]
+			[id, orderer_id, status, created_at, updated_at]
 		)
 	}
 

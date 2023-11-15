@@ -19,9 +19,9 @@ class DemandCreatedSub extends Subscriber<DemandCreatedEvent> {
 	}
 
 	async onMessage(msg: JsMsg) {
-		const { id, orderer_id, status } = this.parseMessage(msg.data)
+		const { id, orderer_id, status, created_at, updated_at } = this.parseMessage(msg.data)
 
-		await demand_model.insert({ id, orderer_id, status })
+		await demand_model.insert({ id, orderer_id, status, created_at, updated_at })
 
 		msg.ack()
 	}

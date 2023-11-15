@@ -19,9 +19,9 @@ class DemandUpdatedSub extends Subscriber<DemandUpdatedEvent> {
 	}
 
 	async onMessage(msg: JsMsg) {
-		const { id, status } = this.parseMessage(msg.data)
+		const { id, status, updated_at } = this.parseMessage(msg.data)
 
-		await demand_model.update(id, { status })
+		await demand_model.update(id, { status, updated_at })
 
 		msg.ack()
 	}

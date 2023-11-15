@@ -16,7 +16,8 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			demand_id: {
 				type: 'uuid',
 				notNull: true,
-				references: 'demand'
+				references: 'demand',
+				onDelete: 'CASCADE'
 			},
 			activity_area_id: {
 				type: 'uuid',
@@ -60,9 +61,17 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			}
 		}
 	)
+
+	pgm.createTrigger('vacancy', 'updated_at', {
+		when: 'BEFORE',
+		operation: 'UPDATE',
+		function: 'update_updated_at',
+		level: 'ROW'
+	})
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
+	pgm.dropTrigger('vacancy', 'updated_at', { ifExists: true })
 	pgm.dropTable('vacancy')
 	pgm.dropType('work_mode')
 }

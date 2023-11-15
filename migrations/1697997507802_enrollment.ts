@@ -11,13 +11,15 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 				type: 'uuid',
 				notNull: true,
 				primaryKey: true,
-				references: 'vacancy'
+				references: 'vacancy',
+				onDelete: 'CASCADE'
 			},
 			candidate_id: {
 				type: 'uuid',
 				notNull: true,
 				primaryKey: true,
-				references: 'candidate'
+				references: 'candidate',
+				onDelete: 'CASCADE'
 			},
 			status: {
 				type: 'enrollment_status',
@@ -36,9 +38,17 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			}
 		}
 	)
+
+	pgm.createTrigger('enrollment', 'updated_at', {
+		when: 'BEFORE',
+		operation: 'UPDATE',
+		function: 'update_updated_at',
+		level: 'ROW'
+	})
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
+	pgm.dropTrigger('enrollment', 'updated_at', { ifExists: true })
 	pgm.dropTable('enrollment')
 	pgm.dropType('enrollment_status')
 }

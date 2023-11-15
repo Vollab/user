@@ -15,7 +15,8 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
 			},
 			orderer_id: {
 				type: 'uuid',
-				notNull: true
+				notNull: true,
+				onDelete: 'CASCADE'
 			},
 			status: {
 				type: 'demand_status',

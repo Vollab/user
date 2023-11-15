@@ -3,21 +3,20 @@ import { MigrationBuilder, ColumnDefinitions } from 'node-pg-migrate'
 export const shorthands: ColumnDefinitions | undefined = undefined
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
-	pgm.createTable(
-		{ schema: 'vacancy', name: 'candidate' },
-		{
-			id: {
-				type: 'uuid',
-				unique: true,
-				notNull: true,
-				primaryKey: true,
-				references: 'user',
-				onDelete: 'CASCADE'
-			}
-		}
+	pgm.createView(
+		'full_candidate',
+		{},
+		`
+    SELECT
+      *
+    FROM
+      vacancy.user u
+    JOIN
+      vacancy.candidate o USING(id)
+    `
 	)
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
-	pgm.dropTable('candidate')
+	pgm.dropView('full_candidate')
 }
