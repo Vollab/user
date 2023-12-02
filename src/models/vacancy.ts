@@ -1,6 +1,8 @@
 import { PartialOmit } from 'common/types/utility'
 import { database } from 'common/services'
-import { Enrollment } from './enrollment'
+
+import { Enrollment, EnrollmentStatus } from './enrollment'
+import { ActivityArea } from './actitvity-area'
 
 export type VacancyWorkMode = 'REMOTE' | 'IN_PERSON' | 'HYBRID'
 
@@ -19,16 +21,19 @@ export interface Vacancy {
 	updated_at: Date
 }
 
-export interface VacancyWithEnrollment extends Vacancy {
-	enrollment: Enrollment
-	activity_area: string
+export interface VacancyWithActivityArea extends Vacancy {
+	activity_area: ActivityArea['name']
+}
+
+export interface CurrentUserVacancy extends VacancyWithActivityArea {
+	enrollment_status: EnrollmentStatus
 }
 
 class VacancyModel {
 	constructor(private db: typeof database) {}
 
 	async findAll() {
-		return this.db.query<Vacancy>(
+		return this.db.query<VacancyWithActivityArea>(
 			`
 			SELECT
 				v.*, a.name activity_area
@@ -43,7 +48,7 @@ class VacancyModel {
 	}
 
 	async findById(id: Vacancy['id']) {
-		return this.db.query<Vacancy>(
+		return this.db.query<VacancyWithActivityArea>(
 			`
 			SELECT
 				v.*, a.name activity_area
@@ -61,7 +66,7 @@ class VacancyModel {
 	}
 
 	async findByDemandId(demand_id: Vacancy['demand_id']) {
-		return this.db.query<Vacancy>(
+		return this.db.query<VacancyWithActivityArea>(
 			`
 			SELECT
 				v.*, a.name activity_area
@@ -79,11 +84,11 @@ class VacancyModel {
 	}
 
 	async findByCandidateIdWithEnrollment(candidate_id: Enrollment['candidate_id']) {
-		return this.db.query<VacancyWithEnrollment>(
+		return this.db.query<CurrentUserVacancy>(
 			`
 			SELECT
 				v.*,
-				to_json(e) enrollment,
+				e.status enrollment_status,
 				a.name activity_area
 			FROM
 				vacancy.vacancy v
