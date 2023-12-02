@@ -19,7 +19,7 @@ router.get(
 		const [demand] = await demand_model.findById(demand_id)
 		if (!demand) throw new NotFoundError('Demand not found!')
 
-		const vacancies = await vacancy_model.findAll()
+		const vacancies = await vacancy_model.findByDemandId(demand_id)
 
 		res.status(200).json({ vacancies })
 	}
@@ -43,5 +43,13 @@ router.get(
 		res.status(200).json({ vacancy })
 	}
 )
+
+router.get('/api/current-user/vacancies', require_auth(['candidate']), async (req, res) => {
+	const candidate_id = req.current_user!.user_id
+
+	const enrollments = await vacancy_model.findByCandidateIdWithEnrollment(candidate_id)
+
+	res.status(200).json({ enrollments })
+})
 
 export { router as find_vacancy_router }
