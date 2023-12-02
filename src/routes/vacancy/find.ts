@@ -47,9 +47,9 @@ router.get(
 router.get('/api/current-user/vacancies', require_auth(['candidate']), async (req, res) => {
 	const candidate_id = req.current_user!.user_id
 
-	const enrollments = await vacancy_model.findByCandidateIdWithEnrollment(candidate_id)
+	const vacancies = await vacancy_model.findByCandidateIdWithEnrollment(candidate_id)
 
-	res.status(200).json({ enrollments })
+	res.status(200).json({ vacancies })
 })
 
 export { router as find_vacancy_router }
