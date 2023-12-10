@@ -124,7 +124,7 @@ class VacancyModel {
 	}
 
 	async update(id: Vacancy['id'], vacancy: PartialOmit<Vacancy, 'id' | 'updated_at' | 'created_at'>) {
-		const entries = Object.entries(vacancy).filter(e => e[1])
+		const entries = Object.entries(vacancy).filter(e => e[1] != null)
 		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 2}`)
 		const values = entries.map(e => e[1])

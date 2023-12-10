@@ -63,7 +63,7 @@ class DemandModel {
 	}
 
 	async update(id: Demand['id'], demand: UpdateDemand) {
-		const entries = Object.entries(demand).filter(e => e[1])
+		const entries = Object.entries(demand).filter(e => e[1] != null)
 		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 2}`)
 		const values = entries.map(e => e[1])
