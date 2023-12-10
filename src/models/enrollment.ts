@@ -83,7 +83,7 @@ class EnrollmentModel {
 	}
 
 	async update(vacancy_id: Enrollment['vacancy_id'], candidate_id: Enrollment['candidate_id'], candidate: UpdateEnrollment) {
-		const entries = Object.entries(candidate)
+		const entries = Object.entries(candidate).filter(e => e[1])
 		if (entries.length === 0) return []
 		const keys = entries.map((e, i) => `${e[0]} = $${i + 3}`)
 		const values = entries.map(e => e[1])
